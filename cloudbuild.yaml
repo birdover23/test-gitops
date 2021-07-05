@@ -1,7 +1,7 @@
 timeout: 780s
 steps:
   - id: build and push app image
-    name: 'gcr.io/cloud-builders/docker'
+    name: 'gcr.io/kaniko-project/executor:latest'
     args:
       - --destination=asia.gcr.io/$PROJECT_ID/laravel_test_app:${SHORT_SHA}
       - --cache=true
@@ -10,7 +10,7 @@ steps:
       - --build-arg=PROJECT_ID=${PROJECT_ID}
 
   - id: build and push web image
-    name: 'gcr.io/cloud-builders/docker'
+    name: 'gcr.io/kaniko-project/executor:latest'
     args:
       - --destination=asia.gcr.io/$PROJECT_ID/laravel_test_web:${SHORT_SHA}
       - --cache=true
