@@ -1,0 +1,13 @@
+# PhpStorm
+.idea
+
+# Docker Compose
+.env
+
+#node_modules
+node_modules/
+
+#composer
+vendor/
+
+.DS_Store
