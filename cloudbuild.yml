@@ -1,0 +1,19 @@
+timeout: 780s
+steps:
+  - id: build and push app image
+    name: gcr.io/dev-xdu/executor:latest
+    args:
+      - --destination=asia.gcr.io/$PROJECT_ID/laravel_test_app:${SHORT_SHA}
+      - --cache=true
+      - --cache-ttl=6h
+      - --dockerfile=./infra/docker/php/Dockerfile_prod
+      - --build-arg=PROJECT_ID=${PROJECT_ID}
+
+  - id: build and push web image
+    name: gcr.io/dev-xdu/executor:latest
+    args:
+      - --destination=asia.gcr.io/$PROJECT_ID/laravel_test_web:${SHORT_SHA}
+      - --cache=true
+      - --cache-ttl=6h
+      - --dockerfile=./infra/docker/nginx/Dockerfile_prod
+      - --build-arg=PROJECT_ID=${PROJECT_ID}
