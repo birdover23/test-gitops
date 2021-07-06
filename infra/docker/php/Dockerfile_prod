@@ -35,3 +35,5 @@ COPY ./backend /work/backend
 WORKDIR /work/backend
 
 RUN composer install
+
+RUN chmod -R www-data /work/backend
