@@ -36,4 +36,4 @@ WORKDIR /work/backend
 
 RUN composer install
 
-RUN chmod -R www-data /work/backend
+RUN chown -R www-data /work/backend
