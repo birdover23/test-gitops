@@ -52,7 +52,7 @@ steps:
     args:
       - clone
       - --recurse-submodules
-      - git@github.com:cinra/manifests-newmedia.git
+      - birdover23@github.com:cinra/manifests-newmedia.git
     volumes:
       - name: 'ssh'
         path: /root/.ssh
