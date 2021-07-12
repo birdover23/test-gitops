@@ -102,23 +102,22 @@ steps:
 
 # ManifestのPR
   - id: Create PR to main
-- name: 'gcr.io/cloud-builders/curl'
-  id: 'PR manifest'
-  entrypoint: 'bash'
-  args:
-  - '-c'
-  - |
-    gcloud secrets versions access latest --secret=github-token >  /root/.ssh/github_access_token \
-    _ACCESS_TOKEN=`cat /root/.ssh/github_access_token`
-    #repo=`echo -n cinra/manifests-newmedia | sed "s/.git//"`
-    json=$(cat << EOS
-    {"title": "good title", "head": "candidate-dev", "base": "main", "body": "great PR messages"}
-    EOS
-    )
-    curl -H 'Content-Type:application/json' \
-        -H "Authorization: token ${_ACCESS_TOKEN}" \
-        "https://api.github.com/repos/cinra/manifests-newmedia/pulls" \
-        -d "$json"
-  volumes:
-  - name: 'ssh'
-    path: /root/.ssh
+    name: 'gcr.io/cloud-builders/curl'
+    entrypoint: 'bash'
+    args:
+    - '-c'
+    - |
+      gcloud secrets versions access latest --secret=github-token >  /root/.ssh/github_access_token \
+      _ACCESS_TOKEN=`cat /root/.ssh/github_access_token`
+      #repo=`echo -n cinra/manifests-newmedia | sed "s/.git//"`
+      json=$(cat << EOS
+      {"title": "good title", "head": "candidate-dev", "base": "main", "body": "great PR messages"}
+      EOS
+      )
+      curl -H 'Content-Type:application/json' \
+          -H "Authorization: token ${_ACCESS_TOKEN}" \
+          "https://api.github.com/repos/cinra/manifests-newmedia/pulls" \
+          -d "$json"
+    volumes:
+    - name: 'ssh'
+      path: /root/.ssh
