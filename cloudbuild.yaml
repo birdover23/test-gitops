@@ -24,7 +24,7 @@ steps:
     args:
       - '-c'
       - |
-        gcloud secrets versions access latest --secret=github-secret > /root/.ssh/id_github
+        gcloud secrets versions access latest --secret=id_github > /root/.ssh/id_github
     volumes:
       - name: 'ssh'
         path: /root/.ssh
@@ -52,7 +52,7 @@ steps:
     args:
       - clone
       - --recurse-submodules
-      - birdover23@github.com:cinra/manifests-newmedia.git
+      - git@github.com:cinra/manifests-newmedia.git
     volumes:
       - name: 'ssh'
         path: /root/.ssh
