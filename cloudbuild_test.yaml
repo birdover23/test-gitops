@@ -1,23 +1,5 @@
 timeout: 780s
 steps:
-  - id: build and push app image
-    name: 'gcr.io/kaniko-project/executor:latest'
-    args:
-      - --destination=asia.gcr.io/$PROJECT_ID/laravel_test_app:${SHORT_SHA}
-      - --cache=true
-      - --cache-ttl=6h
-      - --dockerfile=./infra/docker/php/Dockerfile_prod
-      - --build-arg=PROJECT_ID=${PROJECT_ID}
-
-  - id: build and push web image
-    name: 'gcr.io/kaniko-project/executor:latest'
-    args:
-      - --destination=asia.gcr.io/$PROJECT_ID/laravel_test_web:${SHORT_SHA}
-      - --cache=true
-      - --cache-ttl=6h
-      - --dockerfile=./infra/docker/nginx/Dockerfile_prod
-      - --build-arg=PROJECT_ID=${PROJECT_ID}
-      
   - id: access the id_github file from secret manager
     name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
@@ -79,7 +61,7 @@ steps:
       - '-c'
       - |
         set -x && \
-        sed "s/COMMIT_SHA/${SHORT_SHA}/g" deployment.yaml.tpl > deployment.yml
+        sed "s/COMMIT_SHA/7777/g" deployment.yaml.tpl > deployment.yml
 
   - id: push generated manifests to candidate-dev branch
     name: 'gcr.io/cloud-builders/gcloud'
@@ -93,8 +75,8 @@ steps:
         git commit \
         --author="Cloud Build Service Account <$(gcloud auth list --filter=status:ACTIVE --format='value(account)')>" \
         -m "Deploying images
-        - asia.gcr.io/dev-xdu/laravel_test_app:${SHORT_SHA}
-        - asia.gcr.io/dev-xdu/laravel_test_web:${SHORT_SHA}
+        - asia.gcr.io/dev-xdu/laravel_test_app:777
+        - asia.gcr.io/dev-xdu/laravel_test_web:777
         Built from commit ${COMMIT_SHA} of repository manifests-newmedia" && \
         git push origin candidate-dev
     volumes:
