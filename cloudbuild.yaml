@@ -58,7 +58,7 @@ steps:
         
   - id: switch to candidate-dev branch
     name: 'gcr.io/cloud-builders/gcloud'
-    dir: laravel-test
+    dir: manifests-newmedia
     entrypoint: /bin/sh
     args:
       - '-c'
@@ -73,7 +73,7 @@ steps:
         
   - id: generate manifest for laravel-test
     name: 'gcr.io/cloud-builders/gcloud'
-    dir: laravel-test
+    dir: manifests-newmedia/laravel-test
     entrypoint: /bin/sh
     args:
       - '-c'
@@ -83,7 +83,7 @@ steps:
 
   - id: push generated manifests to candidate-dev branch
     name: 'gcr.io/cloud-builders/gcloud'
-    dir: laravel-test
+    dir: manifests-newmedia
     entrypoint: /bin/sh
     args:
       - '-c'
