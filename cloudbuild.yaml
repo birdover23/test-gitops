@@ -41,7 +41,7 @@ steps:
         IdentityFile /root/.ssh/id_rsa
         EOF
         ssh-keyscan -t rsa github.com > /root/.ssh/known_hosts
-        ssh -T git@github.com
+        #ssh -T git@github.com
     volumes:
       - name: 'ssh'
         path: /root/.ssh
@@ -100,6 +100,17 @@ steps:
     volumes:
       - name: 'ssh'
         path: /root/.ssh
+        
+  - id: access the token_github file from secret manager
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud secrets versions access latest --secret=token_github >  /root/.ssh/github_access_token
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
 
 # ManifestのPR
   - id: Create PR to main
@@ -108,7 +119,6 @@ steps:
     args:
     - '-c'
     - |
-      gcloud secrets versions access latest --secret=github-token >  /root/.ssh/github_access_token \
       _ACCESS_TOKEN=`cat /root/.ssh/github_access_token`
       #repo=`echo -n cinra/manifests-newmedia | sed "s/.git//"`
       json=$(cat << EOS
