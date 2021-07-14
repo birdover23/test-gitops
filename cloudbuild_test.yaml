@@ -61,7 +61,7 @@ steps:
       - '-c'
       - |
         set -x && \
-        sed "s/COMMIT_SHA/8888/g" deployment.yml.tpl > deployment.yml
+        sed "s/COMMIT_SHA/0000/g" deployment.yml.tpl > deployment.yml
 
   - id: push generated manifests to candidate-dev branch
     name: 'gcr.io/cloud-builders/gcloud'
@@ -75,8 +75,8 @@ steps:
         git commit \
         --author="Cloud Build Service Account <$(gcloud auth list --filter=status:ACTIVE --format='value(account)')>" \
         -m "Deploying images
-        - asia.gcr.io/dev-xdu/laravel_test_app:888
-        - asia.gcr.io/dev-xdu/laravel_test_web:888
+        - asia.gcr.io/dev-xdu/laravel_test_app:000
+        - asia.gcr.io/dev-xdu/laravel_test_web:000
         Built from commit ${COMMIT_SHA} of repository manifests-newmedia" && \
         git push origin candidate-dev
     volumes:
@@ -108,6 +108,7 @@ steps:
       EOS
       )
       curl -H 'Content-Type:application/json' \
+          -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${_ACCESS_TOKEN}" \
           "https://api.github.com/repos/cinra/manifests-newmedia/pulls" \
           -d "$json"
