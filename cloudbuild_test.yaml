@@ -1,23 +1,5 @@
 timeout: 780s
 steps:
-  - id: build and push app image
-    name: 'gcr.io/kaniko-project/executor:latest'
-    args:
-      - --destination=asia.gcr.io/$PROJECT_ID/laravel_test_app:${SHORT_SHA}
-      - --cache=true
-      - --cache-ttl=6h
-      - --dockerfile=./infra/docker/php/Dockerfile_prod
-      - --build-arg=PROJECT_ID=${PROJECT_ID}
-
-  - id: build and push web image
-    name: 'gcr.io/kaniko-project/executor:latest'
-    args:
-      - --destination=asia.gcr.io/$PROJECT_ID/laravel_test_web:${SHORT_SHA}
-      - --cache=true
-      - --cache-ttl=6h
-      - --dockerfile=./infra/docker/nginx/Dockerfile_prod
-      - --build-arg=PROJECT_ID=${PROJECT_ID}
-      
   - id: access the id_github file from secret manager
     name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
@@ -123,7 +105,7 @@ steps:
       atoken=`cat /root/.ssh/github_access_token`
       echo $atoken
       json=$(cat << EOS
-      {"title": "PR from Laravel-test", "head": "candidate-dev", "base": "main", "body": "Laravel-testのマニフェストが変更されました"}
+      {"title": "PR from Laravel-test", "head": "candidate-dev", "base": "main", "body": "great PR messages"}
       EOS
       )
       curl -H 'Content-Type:application/json' \
