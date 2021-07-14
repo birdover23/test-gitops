@@ -1,0 +1,118 @@
+timeout: 780s
+steps:
+  - id: access the id_github file from secret manager
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud secrets versions access latest --secret=id_github2 > /root/.ssh/id_rsa
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+        
+  - id: set up git with key and domain
+    name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        chmod 600 /root/.ssh/id_rsa
+        cat <<EOF >/root/.ssh/config
+        Hostname github.com
+        IdentityFile /root/.ssh/id_rsa
+        EOF
+        ssh-keyscan -t rsa github.com > /root/.ssh/known_hosts
+        #ssh -T git@github.com
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+
+  - id: connect to the repository
+    name: 'gcr.io/cloud-builders/git'
+    args:
+      - clone
+      - --recurse-submodules
+      - git@github.com:cinra/manifests-newmedia.git
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+        
+  - id: switch to candidate-dev branch
+    name: 'gcr.io/cloud-builders/gcloud'
+    dir: manifests-newmedia
+    entrypoint: /bin/sh
+    args:
+      - '-c'
+      - |
+        set -x && \
+        git config --global user.email $(git log --format='%an <%ae>' -n 1 HEAD | sed 's/.*\<\([^>]*\)\>.*/\1/g') && \
+        git fetch origin candidate-dev && git switch candidate-dev && \
+        git fetch origin main && git merge origin/main
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+        
+  - id: generate manifest for laravel-test
+    name: 'gcr.io/cloud-builders/gcloud'
+    dir: manifests-newmedia/laravel-test
+    entrypoint: /bin/sh
+    args:
+      - '-c'
+      - |
+        set -x && \
+        sed "s/COMMIT_SHA/00005/g" deployment.yml.tpl > deployment.yml
+
+  - id: push generated manifests to candidate-dev branch
+    name: 'gcr.io/cloud-builders/gcloud'
+    dir: manifests-newmedia
+    entrypoint: /bin/sh
+    args:
+      - '-c'
+      - |
+        set -x && \
+        git add laravel-test/deployment.yml && \
+        git commit \
+        --author="Cloud Build Service Account <$(gcloud auth list --filter=status:ACTIVE --format='value(account)')>" \
+        -m "Deploying images
+        - asia.gcr.io/dev-xdu/laravel_test_app:0005
+        - asia.gcr.io/dev-xdu/laravel_test_web:0005
+        Built from commit ${COMMIT_SHA} of repository manifests-newmedia" && \
+        git push origin candidate-dev
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+        
+  - id: access the token_github file from secret manager
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud secrets versions access latest --secret=token_github >  /root/.ssh/github_access_token
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+
+# ManifestのPR
+  - id: Create PR to main
+    name: 'gcr.io/cloud-builders/curl'
+    entrypoint: 'bash'
+    args:
+    - '-c'
+    - |
+      echo `cat /root/.ssh/github_access_token`
+      atoken=`cat /root/.ssh/github_access_token`
+      echo $atoken
+      json=$(cat << EOS
+      {"title": "good title", "head": "candidate-dev", "base": "main", "body": "great PR messages"}
+      EOS
+      )
+      curl -H 'Content-Type:application/json' \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token $atoken" \
+          "https://api.github.com/repos/cinra/manifests-newmedia/pulls" \
+          -d "$json"
+    volumes:
+    - name: 'ssh'
+      path: /root/.ssh
