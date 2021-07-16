@@ -49,6 +49,14 @@ services:
         source: ./backend
         target: /work/backend
 
+  redis:
+    image: redis:latest
+    volumes:
+      - ./redis/data:/data
+    ports:
+      - 6379:6379
+    command: redis-server
+
   db:
     build:
       context: .
