@@ -2,11 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Account;
-use App\Models\Contact;
-use App\Models\Organization;
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,25 +14,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $account = Account::create(['name' => 'Acme Corporation']);
+        \App\Models\User::factory(100)->create();
+        \App\Models\Category::factory(10)->create();
+        \App\Models\Comment::factory(2500)->create();
+        \App\Models\Image::factory(2500)->create();
+        \App\Models\Video::factory(500)->create();
+        \App\Models\Tag::factory(50)->create();
+        \App\Models\Post::factory(1500)->create();
 
-        User::factory()->create([
-            'account_id' => $account->id,
-            'first_name' => 'John',
-            'last_name' => 'Doe',
-            'email' => 'johndoe@example.com',
-            'owner' => true,
-        ]);
-
-        User::factory(5)->create(['account_id' => $account->id]);
-
-        $organizations = Organization::factory(100)
-            ->create(['account_id' => $account->id]);
-
-        Contact::factory(100)
-            ->create(['account_id' => $account->id])
-            ->each(function ($contact) use ($organizations) {
-                $contact->update(['organization_id' => $organizations->random()->id]);
-            });
+        // post_tag table has no Model so to seed it we need our own logic
+        for ($i = 0; $i < 1500; $i++) {
+            DB::table('post_tag')->insertOrIgnore([
+                'post_id' => mt_rand(1, 1500),
+                'tag_id' => mt_rand(1, 50),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
     }
 }

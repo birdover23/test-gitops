@@ -1,81 +1,61 @@
-# Ping CRM
+# Laravel News API with Admin Panel
+Laravel 8 Admin Panel with API using Jetstream, Livewire, Sanctum, and Tailwind.
 
-A demo application to illustrate how Inertia.js works.
+1. `git clone https://github.com/mdutt247/laravel-news.git`
+2. `cd laravel-news`
+3. `composer install`
+4. `cp .env.example .env`
+5. `php artisan key:generate`
+6. Set your database credentials in `.env` file
+7. `php artisan migrate:fresh --seed`
+8. `php artisan storage:link`
+9. `npm install && npm run dev`
+10. `php artisan serve`
+11. Visit `localhost:8000/login` in your browser
+12. Choose one `email` id from `users` table. Password is `password`.
 
-![](https://raw.githubusercontent.com/inertiajs/pingcrm/master/screenshot.png)
+### Code explanation
 
-## Installation
+**All tutorial links**
+* [Visit mditech.net](https://mditech.net/laravel-tutorial/)
 
-Clone the repo locally:
+*Part 1:* **Create Migration, Model, and Factory to start with the project**
+* [Read on medium.com](https://madhavendra-dutt.medium.com/how-to-seed-test-data-into-a-database-in-laravel-ec1b7defe552)
 
-```sh
-git clone https://github.com/inertiajs/pingcrm.git pingcrm
-cd pingcrm
-```
+*Part 2:* **Establish Relationships**
+* [Read on medium.com](https://madhavendra-dutt.medium.com/database-relationship-6780f4eab72a)
 
-Install PHP dependencies:
+*Part 3:* **API Resources, API Controllers, and API Routes**
+* [Read on medium.com](https://madhavendra-dutt.medium.com/creating-and-consuming-restful-api-in-laravel-7dc116430b3)
 
-```sh
-composer install
-```
+*Part 4:* **Front End for Admin Dashboard on Web inteface**
+* [Read on medium.com](https://madhavendra-dutt.medium.com/creating-the-front-end-in-laravel-using-jetstream-livewire-72d140c6c946)
 
-Install NPM dependencies:
+Do check [Laravel Documentation](https://laravel.com/docs/8.x) if you have any doubt.
 
-```sh
-npm ci
-```
+Twitter: [kotagin](https://twitter.com/kotagin)
+E-mail: [m.dutt@mditech.net](mailto:m.dutt@mditech.net)
+Website: [mditech.net](https://mditech.net)
 
-Build assets:
+### Screenshots
 
-```sh
-npm run dev
-```
+Response from API to be consumed by mobile apps etc.
+![api response](https://miro.medium.com/max/3000/1*yttnGhlogAK_ZtY4sBUqMQ.png "API Response") 
 
-Setup configuration:
+Admin Dashboard - Category Managment Page
+![category managment page](https://miro.medium.com/max/875/1*stzLGcvrR15TmokZZIrsRQ.png "Category Managment Page")
 
-```sh
-cp .env.example .env
-```
+Admin Dashboard - Create Category
+![create category](https://miro.medium.com/max/875/1*dOZ1DSehN-5SYbv9_aSh_Q.png "Create Category")
 
-Generate application key:
+Admin Dashboard - Edit Category
+![edit category](https://miro.medium.com/max/875/1*iWv3ujBXhOpIJV-NiOA-gg.png "Edit Category")
 
-```sh
-php artisan key:generate
-```
+Admin Dashboard - Post Managment Page
+![post managment page](https://miro.medium.com/max/678/1*4pUX8N43eYjdmenGyFJ3nA.png "Post Management Page")
 
-Create an SQLite database. You can also use another database (MySQL, Postgres), simply update your configuration accordingly.
+Admin Dashboard - Create Post
+![create post](https://miro.medium.com/max/875/1*IDLWBhGNB3KHEiYi6N1czA.png "Create Post")
 
-```sh
-touch database/database.sqlite
-```
-
-Run database migrations:
-
-```sh
-php artisan migrate
-```
-
-Run database seeder:
-
-```sh
-php artisan db:seed
-```
-
-Run the dev server (the output will give the address):
-
-```sh
-php artisan serve
-```
-
-You're ready to go! Visit Ping CRM in your browser, and login with:
-
-- **Username:** johndoe@example.com
-- **Password:** secret
-
-## Running tests
-
-To run the Ping CRM tests, run:
-
-```
-phpunit
-```
+Admin Dashboard - Edit Post
+![edit post](https://miro.medium.com/max/875/1*5SBQT9TRSL140saVh1Hl7Q.png "Edit Post")

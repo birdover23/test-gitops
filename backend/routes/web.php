@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\ContactsController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ImagesController;
-use App\Http\Controllers\OrganizationsController;
-use App\Http\Controllers\ReportsController;
-use App\Http\Controllers\UsersController;
+use App\Http\Livewire\Categories\Categories;
+use App\Http\Livewire\Categories\Categoryposts;
+use App\Http\Livewire\Posts\Posts;
+use App\Http\Livewire\Posts\Post as p;
+use App\Http\Livewire\Tags\Tagposts;
+use App\Http\Livewire\Tags\Tags;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,123 +19,42 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Auth
+// Route::get('test', function () {
+//     $category = App\Models\Category::find(3);
+//     // return $category->posts;
 
-Route::get('login', [AuthenticatedSessionController::class, 'create'])
-    ->name('login')
-    ->middleware('guest');
+//     $comment = App\Models\Comment::find(152);
+//     // return $comment->author;
+//     // return $comment->post;
 
-Route::post('login', [AuthenticatedSessionController::class, 'store'])
-    ->name('login.store')
-    ->middleware('guest');
+//     $post = App\Models\Post::find(152);
+//     // return $post->category;
+//     // return $post->author;
+//     // return $post->images;
+//     // return $post->comments;
+//     // return $post->tags;
 
-Route::delete('logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->name('logout');
+//     $tag = App\Models\Tag::find(5);
+//     // return $tag->posts;
 
-// Dashboard
+//     $author = App\Models\User::find(88);
+//     // return $author->posts;
+//     return $author->comments;
+// });
 
-Route::get('/', [DashboardController::class, 'index'])
-    ->name('dashboard')
-    ->middleware('auth');
+Route::get('/', function () {
+    return view('welcome');
+});
 
-// Users
+Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
 
-Route::get('users', [UsersController::class, 'index'])
-    ->name('users')
-    ->middleware('auth');
+Route::get('dashboard/categories', Categories::class)->name('categories');
+Route::get('dashboard/categories/{id}/posts', Categoryposts::class);
 
-Route::get('users/create', [UsersController::class, 'create'])
-    ->name('users.create')
-    ->middleware('auth');
+Route::get('dashboard/posts', Posts::class)->name('posts');
+Route::get('dashboard/posts/{id}', p::class);
 
-Route::post('users', [UsersController::class, 'store'])
-    ->name('users.store')
-    ->middleware('auth');
-
-Route::get('users/{user}/edit', [UsersController::class, 'edit'])
-    ->name('users.edit')
-    ->middleware('auth');
-
-Route::put('users/{user}', [UsersController::class, 'update'])
-    ->name('users.update')
-    ->middleware('auth');
-
-Route::delete('users/{user}', [UsersController::class, 'destroy'])
-    ->name('users.destroy')
-    ->middleware('auth');
-
-Route::put('users/{user}/restore', [UsersController::class, 'restore'])
-    ->name('users.restore')
-    ->middleware('auth');
-
-// Organizations
-
-Route::get('organizations', [OrganizationsController::class, 'index'])
-    ->name('organizations')
-    ->middleware('auth');
-
-Route::get('organizations/create', [OrganizationsController::class, 'create'])
-    ->name('organizations.create')
-    ->middleware('auth');
-
-Route::post('organizations', [OrganizationsController::class, 'store'])
-    ->name('organizations.store')
-    ->middleware('auth');
-
-Route::get('organizations/{organization}/edit', [OrganizationsController::class, 'edit'])
-    ->name('organizations.edit')
-    ->middleware('auth');
-
-Route::put('organizations/{organization}', [OrganizationsController::class, 'update'])
-    ->name('organizations.update')
-    ->middleware('auth');
-
-Route::delete('organizations/{organization}', [OrganizationsController::class, 'destroy'])
-    ->name('organizations.destroy')
-    ->middleware('auth');
-
-Route::put('organizations/{organization}/restore', [OrganizationsController::class, 'restore'])
-    ->name('organizations.restore')
-    ->middleware('auth');
-
-// Contacts
-
-Route::get('contacts', [ContactsController::class, 'index'])
-    ->name('contacts')
-    ->middleware('auth');
-
-Route::get('contacts/create', [ContactsController::class, 'create'])
-    ->name('contacts.create')
-    ->middleware('auth');
-
-Route::post('contacts', [ContactsController::class, 'store'])
-    ->name('contacts.store')
-    ->middleware('auth');
-
-Route::get('contacts/{contact}/edit', [ContactsController::class, 'edit'])
-    ->name('contacts.edit')
-    ->middleware('auth');
-
-Route::put('contacts/{contact}', [ContactsController::class, 'update'])
-    ->name('contacts.update')
-    ->middleware('auth');
-
-Route::delete('contacts/{contact}', [ContactsController::class, 'destroy'])
-    ->name('contacts.destroy')
-    ->middleware('auth');
-
-Route::put('contacts/{contact}/restore', [ContactsController::class, 'restore'])
-    ->name('contacts.restore')
-    ->middleware('auth');
-
-// Reports
-
-Route::get('reports', [ReportsController::class, 'index'])
-    ->name('reports')
-    ->middleware('auth');
-
-// Images
-
-Route::get('/img/{path}', [ImagesController::class, 'show'])
-    ->where('path', '.*')
-    ->name('image');
+Route::get('dashboard/tags', Tags::class)->name('tags');
+Route::get('dashboard/tags/{id}/posts', Tagposts::class);
